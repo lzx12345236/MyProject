@@ -73,7 +73,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
 total_epochs = 300
 checkpoint_config = dict(interval=1)
-evaluation = dict(interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+evaluation = dict(interval=10, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(interval=122, hooks=[dict(type='TextLoggerHook')])
 log_level = 'INFO'
 work_dir = './work_dirs/posec3d/slowonly_r50_ntu60_xsub/joint'
