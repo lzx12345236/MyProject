@@ -57,12 +57,12 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=16,
+    videos_per_gpu=8,
     workers_per_gpu=1,
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type='RepeatDataset',
-        times=10,
+        times=5,
         dataset=dict(type=dataset_type, ann_file=ann_file, split='xsub_train', pipeline=train_pipeline)),
     val=dict(type=dataset_type, ann_file=ann_file, split='xsub_val', pipeline=val_pipeline),
     test=dict(type=dataset_type, ann_file=ann_file, split='xsub_val', pipeline=test_pipeline))
