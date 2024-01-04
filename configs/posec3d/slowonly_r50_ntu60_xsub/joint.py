@@ -64,8 +64,8 @@ data = dict(
         type='RepeatDataset',
         times=5,
         dataset=dict(type=dataset_type, ann_file=ann_file, split='xsub_train', pipeline=train_pipeline)),
-    val=dict(type=dataset_type, ann_file=ann_file, split='xsub_val', pipeline=val_pipeline),
-    test=dict(type=dataset_type, ann_file=ann_file, split='xsub_val', pipeline=test_pipeline))
+    val=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=val_pipeline),
+    test=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
