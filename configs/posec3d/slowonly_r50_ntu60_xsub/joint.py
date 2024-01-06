@@ -15,7 +15,7 @@ model = dict(
     cls_head=dict(
         type='I3DHead',
         in_channels=512,
-        num_classes=60,
+        num_classes=17,
         dropout=0.5),
     test_cfg=dict(average_clips='prob'))
 
@@ -74,6 +74,6 @@ lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
 total_epochs = 500
 checkpoint_config = dict(interval=1)
 evaluation = dict(interval=10, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-log_config = dict(interval=315, hooks=[dict(type='TextLoggerHook')])
+log_config = dict(interval=365, hooks=[dict(type='TextLoggerHook')])
 log_level = 'INFO'
 work_dir = './work_dirs/posec3d/slowonly_r50_ntu60_xsub/joint'
