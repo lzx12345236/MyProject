@@ -15,7 +15,7 @@ model = dict(
     cls_head=dict(
         type='I3DHead',
         in_channels=512,
-        num_classes=17,
+        num_classes=60,
         dropout=0.5),
     test_cfg=dict(average_clips='prob'))
 
@@ -30,7 +30,7 @@ train_pipeline = [
     dict(type='Resize', scale=(-1, 64)),
     dict(type='RandomResizedCrop', area_range=(0.56, 1.0)),
     dict(type='Resize', scale=(56, 56), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5, left_kp=left_kp, right_kp=right_kp),
+    dict(type='Flip', flip_ratio=0.7, left_kp=left_kp, right_kp=right_kp),
     dict(type='GeneratePoseTarget', with_kp=True, with_limb=False),
     dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -60,20 +60,22 @@ data = dict(
     videos_per_gpu=16,
     workers_per_gpu=1,
     test_dataloader=dict(videos_per_gpu=1),
+    val_dataloader=dict(videos_per_gpu=3),
     train=dict(
         type='RepeatDataset',
         times=10,
         dataset=dict(type=dataset_type, ann_file=ann_file, split='xsub_train', pipeline=train_pipeline)),
-    val=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=val_pipeline),
+    val=dict(
+type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=val_pipeline),
     test=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
-total_epochs = 250
+total_epochs = 300
 checkpoint_config = dict(interval=1)
-evaluation = dict(interval=10, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-log_config = dict(interval=242, hooks=[dict(type='TextLoggerHook')])
+evaluation = dict(interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+log_config = dict(interval=243, hooks=[dict(type='TextLoggerHook')])
 log_level = 'INFO'
 work_dir = './work_dirs/posec3d/slowonly_r50_ntu60_xsub/joint'
