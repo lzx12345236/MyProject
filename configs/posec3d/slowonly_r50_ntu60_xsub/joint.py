@@ -57,25 +57,25 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=16,
     workers_per_gpu=1,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=3),
     train=dict(
         type='RepeatDataset',
-        times=3,
+        times=10,
         dataset=dict(type=dataset_type, ann_file=ann_file, split='xsub_train', pipeline=train_pipeline)),
     val=dict(
 type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=val_pipeline),
     test=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
+optimizer = dict(type='SGD', lr=0.5, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
 total_epochs = 250
 checkpoint_config = dict(interval=1)
 evaluation = dict(interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-log_config = dict(interval=146, hooks=[dict(type='TextLoggerHook')])
+log_config = dict(interval=243, hooks=[dict(type='TextLoggerHook')])
 log_level = 'INFO'
 work_dir = './work_dirs/posec3d/slowonly_r50_ntu60_xsub/joint'
