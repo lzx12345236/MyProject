@@ -57,19 +57,19 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=4,
+    videos_per_gpu=6,
     workers_per_gpu=1,
     test_dataloader=dict(videos_per_gpu=1),
     val_dataloader=dict(videos_per_gpu=3),
     train=dict(
         type='RepeatDataset',
-        times=2,
+        times=3,
         dataset=dict(type=dataset_type, ann_file=ann_file, split='xsub_train', pipeline=train_pipeline)),
     val=dict(
 type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=val_pipeline),
     test=dict(type=dataset_type, ann_file=ann_file, split='xsub_test', pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.5, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
+optimizer = dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
