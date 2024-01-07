@@ -101,7 +101,7 @@ class SimpleHead(BaseHead):
                 if isinstance(x, tuple) or isinstance(x, list):
                     x = torch.cat(x, dim=1)
                 x = pool(x)
-                x=self.cam(x)
+                #x=self.cam(x)
                 x = x.view(x.shape[:2])
             if self.mode == 'GCN':
                 pool = nn.AdaptiveAvgPool2d(1)
