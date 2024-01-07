@@ -5,6 +5,30 @@ from mmcv.cnn import normal_init
 from ..builder import HEADS
 from .base import BaseHead
 
+class ChannelAttention(nn.Module):
+    def __init__(self, in_planes, ratio=16):
+        super(ChannelAttention, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool3d(1)
+        self.max_pool = nn.AdaptiveMaxPool3d(1)
+        self.fc1 = nn.Conv3d(in_planes, in_planes // ratio, 1, bias=False)
+        self.relu1 = nn.ReLU()
+        self.fc2 = nn.Conv3d(in_planes // ratio, in_planes, 1, bias=False)
+        self.sigmoid = nn.Sigmoid()
+    def forward(self, x):
+        x1=self.avg_pool(x)
+        x2=self.max_pool(x)
+        avg_out = self.fc2(self.relu1(self.fc1(x1)))
+        max_out = self.fc2(self.relu1(self.fc1(x2)))
+        out = avg_out + max_out
+        return self.sigmoid(out)
+
+class CAM(nn.Module):
+    def __init__(self, in_planes, ratio=16, kernel_size=7):
+        super(CAM, self).__init__()
+        self.channel_attention = ChannelAttention(in_planes, ratio)
+    def forward(self, x):
+        channel_out = self.channel_attention(x)
+        return x*channel_out
 
 @HEADS.register_module()
 class SimpleHead(BaseHead):
@@ -41,6 +65,7 @@ class SimpleHead(BaseHead):
 
         self.in_c = in_channels
         self.fc_cls = nn.Linear(self.in_c, num_classes)
+        self.cam=CAM(in_channels)
 
     def init_weights(self):
         """Initiate the parameters from scratch."""
@@ -76,6 +101,7 @@ class SimpleHead(BaseHead):
                 if isinstance(x, tuple) or isinstance(x, list):
                     x = torch.cat(x, dim=1)
                 x = pool(x)
+                x=self.cam(x)
                 x = x.view(x.shape[:2])
             if self.mode == 'GCN':
                 pool = nn.AdaptiveAvgPool2d(1)
