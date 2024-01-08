@@ -60,7 +60,7 @@ data = dict(
     videos_per_gpu=12,
     workers_per_gpu=1,
     test_dataloader=dict(videos_per_gpu=1),
-    val_dataloader=dict(videos_per_gpu=3),
+    val_dataloader=dict(videos_per_gpu=2),
     train=dict(
         type='RepeatDataset',
         times=10,
