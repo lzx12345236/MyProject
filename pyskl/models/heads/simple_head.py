@@ -65,7 +65,7 @@ class SimpleHead(BaseHead):
 
         self.in_c = in_channels
         self.fc_cls = nn.Linear(self.in_c, num_classes)
-        #self.cam=CAM(in_channels)
+        self.cam=CAM(in_channels)
 
     def init_weights(self):
         """Initiate the parameters from scratch."""
